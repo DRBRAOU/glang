@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Gondi Vaani · Editorial console</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin">
+
+  <!-- ============================== LOGIN ============================== -->
+  <section id="login-view" class="login" hidden>
+    <form id="login-form" class="login-card" autocomplete="on">
+      <p class="brand-mini">Gondi Vaani</p>
+      <h1>Editorial console</h1>
+      <p class="muted small">For authorised BRAOU staff and language experts.</p>
+      <label>Username <input type="text" name="username" autocomplete="username" required maxlength="64"></label>
+      <label>Password <input type="password" name="password" autocomplete="current-password" required maxlength="256"></label>
+      <p class="form-error" id="login-error" role="alert"></p>
+      <button class="btn primary" type="submit">Sign in</button>
+      <p class="small muted"><a href="/">← Back to the learner library</a></p>
+    </form>
+  </section>
+
+  <!-- ============================== APP ============================== -->
+  <div id="app-view" class="app" hidden>
+    <header class="topbar">
+      <a class="brand" href="/admin"><img src="/favicon.svg" alt="" width="28" height="28"> Gondi Vaani <span>Editorial</span></a>
+      <nav class="tabs" id="tabs" aria-label="Sections">
+        <button type="button" data-view="expressions">Expressions</button>
+        <button type="button" data-view="review">Review queue <span class="badge" id="review-badge" hidden></span></button>
+        <button type="button" data-view="import" data-roles="admin contributor">Bulk import</button>
+        <button type="button" data-view="speakers">Speakers</button>
+        <button type="button" data-view="categories">Categories</button>
+        <button type="button" data-view="users" data-roles="admin">Users</button>
+        <button type="button" data-view="reports">Reports</button>
+      </nav>
+      <div class="whoami">
+        <button type="button" class="btn ghost small" id="account-btn"></button>
+        <button type="button" class="btn small" id="logout-btn">Sign out</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- ---------------- Expressions ---------------- -->
+      <section class="view" id="view-expressions" hidden>
+        <div class="view-head">
+          <h2>Expressions</h2>
+          <button type="button" class="btn primary" id="new-expr-btn" data-roles="admin contributor">+ New expression</button>
+        </div>
+        <div class="toolbar">
+          <input type="search" id="ex-q" placeholder="Search ID, Gondi, Telugu or English" aria-label="Search expressions">
+          <select id="ex-status" aria-label="Status filter">
+            <option value="">All (except archived)</option>
+            <option value="draft">Draft</option>
+            <option value="in_review">In review</option>
+            <option value="approved">Approved</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
+          <select id="ex-cat" aria-label="Category filter"><option value="">All categories</option></select>
+          <a class="btn" href="/api/admin/expressions/export.csv" download>Export CSV</a>
+        </div>
+        <div class="table-wrap">
+          <table class="grid" id="ex-table">
+            <thead><tr><th>ID</th><th>Gondi</th><th>Telugu</th><th>English</th><th>Category</th><th>Audio</th><th>Status</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="muted small" id="ex-count"></p>
+      </section>
+
+      <!-- ---------------- Review queue ---------------- -->
+      <section class="view" id="view-review" hidden>
+        <div class="view-head"><h2>Review queue</h2></div>
+        <p class="muted" id="review-intro"></p>
+        <h3 class="sub">Waiting for review</h3>
+        <div class="table-wrap"><table class="grid" id="rq-review"><thead><tr><th>ID</th><th>Gondi</th><th>Meaning</th><th>Updated</th></tr></thead><tbody></tbody></table></div>
+        <h3 class="sub">Approved — ready to publish</h3>
+        <div class="table-wrap"><table class="grid" id="rq-approved"><thead><tr><th>ID</th><th>Gondi</th><th>Meaning</th><th>Updated</th></tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <!-- ---------------- Import ---------------- -->
+      <section class="view" id="view-import" hidden>
+        <div class="view-head"><h2>Bulk import</h2>
+          <a class="btn" href="/api/admin/imports/template.csv" download>Download CSV template</a></div>
+        <div class="panel">
+          <p>Upload a <strong>UTF-8 CSV</strong> with the columns
+            <code>expression_id, category, english, telugu, gondi_text, variety, script, audio_filename</code>
+            (optional: <code>transliteration, usage_note, speaker</code>) and a <strong>ZIP</strong> of the audio files named in
+            <code>audio_filename</code>. Nothing is saved until you confirm the preview. Every new entry starts as a <em>draft</em>.</p>
+          <p class="small muted">Without a ZIP, entries are imported as text only and recordings are added later.
+            <strong>Update mode</strong> lets you re-import a revised file: existing entries take the new values, blank cells
+            never erase what is already there (for example expert-entered Gondi text), and changed text on a reviewed entry sends it back for review.</p>
+          <form id="import-form" class="import-form">
+            <label>CSV file <input type="file" name="csv_file" accept=".csv,text/csv" required></label>
+            <label>Audio ZIP <small>(optional — leave empty to import text only)</small>
+              <input type="file" name="zip_file" accept=".zip,application/zip"></label>
+            <label>Mode <select name="mode">
+              <option value="create">Add new entries only</option>
+              <option value="update">Add new and update existing</option>
+            </select></label>
+            <button class="btn primary" type="submit">Check files (dry run)</button>
+          </form>
+          <p class="form-error" id="import-error" role="alert"></p>
+        </div>
+        <div id="import-result" hidden></div>
+        <h3 class="sub">Recent imports</h3>
+        <div class="table-wrap"><table class="grid" id="import-jobs"><thead><tr><th>#</th><th>CSV</th><th>ZIP</th><th>Rows</th><th>Valid</th><th>Status</th><th>When</th></tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <!-- ---------------- Speakers ---------------- -->
+      <section class="view" id="view-speakers" hidden>
+        <div class="view-head"><h2>Speakers</h2>
+          <button type="button" class="btn primary" id="new-speaker-btn" data-roles="admin contributor">+ Add speaker</button></div>
+        <p class="muted">A recording can be published only when its speaker's <strong>consent scope</strong> and <strong>consent date</strong> are recorded.</p>
+        <div class="table-wrap"><table class="grid" id="sp-table"><thead><tr><th>Name</th><th>Variety</th><th>Credit line</th><th>Consent</th><th>Restrictions</th><th></th></tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <!-- ---------------- Categories ---------------- -->
+      <section class="view" id="view-categories" hidden>
+        <div class="view-head"><h2>Categories</h2></div>
+        <form id="cat-form" class="inline-form" data-roles="admin contributor">
+          <input type="text" name="name" placeholder="New category name" required maxlength="100" aria-label="Category name">
+          <input type="number" name="sort_order" value="100" aria-label="Sort order" class="narrow">
+          <button class="btn primary" type="submit">Add</button>
+        </form>
+        <div class="table-wrap"><table class="grid" id="cat-table"><thead><tr><th>Name</th><th>Order</th><th></th></tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <!-- ---------------- Users ---------------- -->
+      <section class="view" id="view-users" hidden>
+        <div class="view-head"><h2>Users</h2>
+          <button type="button" class="btn primary" id="new-user-btn">+ Add user</button></div>
+        <p class="muted small"><strong>Contributors</strong> add and edit drafts and recordings. <strong>Reviewers</strong> verify text, audio and consent, then approve or send back.
+          <strong>Administrators</strong> publish and manage everything.</p>
+        <div class="table-wrap"><table class="grid" id="user-table"><thead><tr><th>Username</th><th>Name</th><th>Role</th><th>Status</th><th>Last sign-in</th><th></th></tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <!-- ---------------- Reports ---------------- -->
+      <section class="view" id="view-reports" hidden>
+        <div class="view-head"><h2>Reports</h2></div>
+        <div class="stats" id="stats"></div>
+        <div class="two-col">
+          <div class="panel"><h3>By category</h3><table class="grid compact" id="cat-report"><tbody></tbody></table></div>
+          <div class="panel" data-roles="admin">
+            <h3>Backups</h3>
+            <p class="small muted">A backup contains the database and every audio file. Store copies off the server.</p>
+            <button type="button" class="btn" id="backup-btn">Create backup now</button>
+            <ul class="plain" id="backup-list"></ul>
+          </div>
+        </div>
+        <div class="panel" data-roles="admin">
+          <h3>Activity log</h3>
+          <div class="table-wrap"><table class="grid compact" id="audit-table"><thead><tr><th>When (UTC)</th><th>User</th><th>Action</th><th>Item</th><th>Detail</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ============================== EXPRESSION EDITOR (drawer) ============================== -->
+  <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+  <aside class="drawer" id="drawer" aria-labelledby="drawer-title" role="dialog" aria-modal="true" hidden>
+    <header class="drawer-head">
+      <div>
+        <h2 id="drawer-title">Expression</h2>
+        <span class="status-pill" id="drawer-status"></span>
+      </div>
+      <div class="row">
+        <button type="button" class="btn small" id="drawer-prev" aria-label="Previous expression in list">‹ Previous</button>
+        <span class="small muted" id="drawer-pos"></span>
+        <button type="button" class="btn small" id="drawer-next" aria-label="Next expression in list">Next ›</button>
+        <button type="button" class="btn ghost" id="drawer-close" aria-label="Close">✕</button>
+      </div>
+    </header>
+    <div class="drawer-body">
+      <div class="notice" id="ex-problems" hidden></div>
+
+      <form id="ex-form" class="form-grid">
+        <label>Expression ID <input type="text" name="expression_code" required maxlength="32" placeholder="GON-001"></label>
+        <label>Category <select name="category_id"><option value="">—</option></select></label>
+        <label class="span2 gondi-field">Gondi text <small>(as supplied by the expert — never guessed)</small>
+          <textarea name="gondi_text" maxlength="1000" lang="gon" rows="2"></textarea></label>
+        <label class="span2">Transliteration / pronunciation guide <small>(optional)</small>
+          <input type="text" name="transliteration" maxlength="1000"></label>
+        <label>Telugu meaning <textarea name="telugu" lang="te" maxlength="1000" rows="2"></textarea></label>
+        <label>English meaning <textarea name="english" lang="en" maxlength="1000" rows="2"></textarea></label>
+        <label>Language variety <input type="text" name="variety" maxlength="100" placeholder="e.g. Adilabad" list="variety-list"></label>
+        <label>Script <select name="script">
+          <option value="">—</option><option>Telugu</option><option>Devanagari</option>
+          <option>Masaram Gondi</option><option>Gunjala Gondi</option><option>Latin</option></select></label>
+        <label class="span2">Usage note <small>(shown to learners, optional)</small>
+          <textarea name="usage_note" maxlength="2000" rows="2"></textarea></label>
+        <label class="span2">Provenance / source notes <small>(internal)</small>
+          <textarea name="provenance" maxlength="2000" rows="2"></textarea></label>
+        <div class="span2 form-actions">
+          <p class="form-error" id="ex-error" role="alert"></p>
+          <button type="submit" class="btn primary" id="ex-save">Save</button>
+        </div>
+      </form>
+      <datalist id="variety-list"></datalist>
+
+      <section class="block" id="rec-block" hidden>
+        <h3>Recordings</h3>
+        <p class="small muted">Learners hear only the <strong>default</strong> recording, and only after it is approved and the entry is published.</p>
+        <ul class="recs" id="rec-list"></ul>
+
+        <div class="add-rec" id="add-rec">
+          <h4>Add a recording</h4>
+          <p class="prompt" id="rec-prompt" aria-live="polite"></p>
+          <div class="rec-options">
+            <label>Speaker <select id="rec-speaker"><option value="">— choose speaker —</option></select></label>
+            <label class="check"><input type="checkbox" id="rec-default" checked> Make default</label>
+          </div>
+          <div class="rec-methods">
+            <div class="method">
+              <h5>Record with microphone</h5>
+              <p class="small muted" id="mic-note"></p>
+              <div class="recorder">
+                <button type="button" class="btn" id="mic-start">● Start recording</button>
+                <button type="button" class="btn" id="mic-stop" hidden>■ Stop</button>
+                <span class="timer" id="mic-timer" aria-live="off">0:00</span>
+                <canvas id="mic-level" width="160" height="28" aria-hidden="true"></canvas>
+              </div>
+              <div id="mic-preview" hidden>
+                <audio controls id="mic-audio"></audio>
+                <div class="row">
+                  <button type="button" class="btn primary" id="mic-save">Save this recording</button>
+                  <button type="button" class="btn ghost" id="mic-discard">Discard</button>
+                </div>
+              </div>
+            </div>
+            <div class="method">
+              <h5>Upload a file</h5>
+              <p class="small muted">MP3 or WAV preferred (WebM, Ogg, M4A also accepted). Max 2 minutes.</p>
+              <input type="file" id="rec-file" accept=".mp3,.wav,.webm,.ogg,.m4a,audio/*">
+              <div id="file-preview" hidden>
+                <audio controls id="file-audio"></audio>
+                <button type="button" class="btn primary" id="file-save">Upload this file</button>
+              </div>
+            </div>
+          </div>
+          <p class="form-error" id="rec-error" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="block" id="wf-block" hidden>
+        <h3>Workflow</h3>
+        <ol class="flow" id="flow">
+          <li data-s="draft">Draft</li><li data-s="in_review">In review</li><li data-s="approved">Approved</li><li data-s="published">Published</li>
+        </ol>
+        <label id="wf-comment-wrap">Comments for the team <textarea id="wf-comment" maxlength="4000" rows="2" placeholder="Required when sending back for revision"></textarea></label>
+        <div class="row wrap" id="wf-actions"></div>
+        <p class="form-error" id="wf-error" role="alert"></p>
+        <h4>History</h4>
+        <ul class="history" id="history"></ul>
+      </section>
+    </div>
+  </aside>
+
+  <!-- ============================== Generic modal ============================== -->
+  <dialog id="modal" class="modal">
+    <form method="dialog" id="modal-form">
+      <h2 id="modal-title"></h2>
+      <div id="modal-body" class="form-grid"></div>
+      <p class="form-error" id="modal-error" role="alert"></p>
+      <div class="row end">
+        <button type="button" class="btn ghost" id="modal-cancel">Cancel</button>
+        <button type="submit" class="btn primary" id="modal-ok">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="/js/admin.js" defer></script>
+</body>
+</html>

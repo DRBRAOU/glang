@@ -1,0 +1,12 @@
+.env
+data/
+storage/*
+!storage/audio/
+storage/audio/*
+!storage/audio/.gitkeep
+backups/
+__pycache__/
+*.pyc
+.pytest_cache/
+deployment/certs/*.pem
+deployment/certbot-www/

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gondi Vaani · Listen and learn Gondi</title>
+  <meta name="description" content="Expert-voiced Gondi words, greetings, phrases and sentences with Telugu and English meanings. Dr. B. R. Ambedkar Open University, Hyderabad.">
+  <meta name="theme-color" content="#7a3b1d">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/learner.css">
+</head>
+<body class="learner">
+  <a class="skip-link" href="#library">Skip to the expressions</a>
+
+  <header class="hero">
+    <div class="hero-pattern" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <p class="institution">Dr. B. R. Ambedkar Open University, Hyderabad</p>
+      <h1>Gondi Vaani <span lang="te" class="title-te">గోండి వాణి</span></h1>
+      <p class="lede">Listen to Gondi words, greetings and sentences spoken by community experts, with meanings in Telugu and English.</p>
+
+      <form class="search" role="search" id="search-form">
+        <label for="q" class="visually-hidden">Search in Gondi, Telugu or English</label>
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" name="q" type="search" autocomplete="off" spellcheck="false"
+               placeholder="Search Gondi, Telugu, English · వెతకండి">
+        <button type="button" class="clear" id="clear-search" aria-label="Clear search" hidden>×</button>
+      </form>
+    </div>
+  </header>
+
+  <main id="library" class="wrap" tabindex="-1">
+    <nav class="filters" aria-label="Categories">
+      <div class="chips" id="chips" role="list"></div>
+      <label class="fav-toggle">
+        <input type="checkbox" id="fav-only">
+        <span>★ Favourites only</span>
+      </label>
+    </nav>
+
+    <p class="result-count" id="result-count" aria-live="polite"></p>
+
+    <ol class="cards" id="cards" aria-label="Expressions"></ol>
+
+    <div class="empty" id="empty" hidden>
+      <p class="empty-title" id="empty-title">No expressions found.</p>
+      <p id="empty-body">Try a different word, or choose “All”.</p>
+    </div>
+
+    <div class="loading" id="loading" role="status">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span class="visually-hidden">Loading expressions…</span>
+    </div>
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>All recordings are authentic voices of Gondi-speaking experts, published with their consent after expert review.
+      Recordings are for learning within BRAOU courses; please do not re-use them elsewhere without permission.</p>
+    <p class="small">Tip: press <kbd>Space</kbd> to play or pause, <kbd>←</kbd> <kbd>→</kbd> for previous / next.</p>
+  </footer>
+
+  <!-- Persistent player -->
+  <section class="player" id="player" aria-label="Audio player" hidden>
+    <div class="player-inner wrap">
+      <div class="now">
+        <p class="now-gondi" id="now-gondi" lang="gon"></p>
+        <p class="now-meaning" id="now-meaning"></p>
+      </div>
+      <div class="controls">
+        <button type="button" class="ctl" id="prev" aria-label="Previous expression">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M19 5 9 12l10 7z"/></svg>
+        </button>
+        <button type="button" class="ctl" id="replay" aria-label="Replay from start">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5"/></svg>
+        </button>
+        <button type="button" class="ctl primary" id="playpause" aria-label="Play">
+          <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>
+          <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h3.5v16H7zM13.5 4H17v16h-3.5z"/></svg>
+        </button>
+        <button type="button" class="ctl" id="next" aria-label="Next expression">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M5 5l10 7-10 7z"/></svg>
+        </button>
+        <div class="speed" role="group" aria-label="Playback speed">
+          <button type="button" data-rate="0.75" aria-pressed="false">0.75×</button>
+          <button type="button" data-rate="1" aria-pressed="true">1×</button>
+        </div>
+      </div>
+      <div class="progress" aria-hidden="true"><div class="bar" id="bar"></div></div>
+    </div>
+  </section>
+
+  <p class="visually-hidden" id="announcer" aria-live="polite"></p>
+  <audio id="audio" preload="none"></audio>
+
+  <template id="card-tpl">
+    <li class="card">
+      <button type="button" class="play" aria-label="Play">
+        <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>
+        <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h3.5v16H7zM13.5 4H17v16h-3.5z"/></svg>
+        <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+      <div class="body">
+        <p class="gondi" lang="gon"></p>
+        <p class="translit"></p>
+        <dl class="meanings">
+          <div class="m-te"><dt>తెలుగు</dt><dd lang="te"></dd></div>
+          <div class="m-en"><dt>English</dt><dd lang="en"></dd></div>
+        </dl>
+        <p class="note"></p>
+        <p class="meta"></p>
+      </div>
+      <button type="button" class="fav" aria-pressed="false" aria-label="Add to favourites">★</button>
+    </li>
+  </template>
+
+  <script src="/js/learner.js" defer></script>
+</body>
+</html>

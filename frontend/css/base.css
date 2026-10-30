@@ -1,0 +1,136 @@
+/* Gondi Vaani — shared foundations (fonts are self-hosted; no external requests) */
+
+@font-face { font-family: "GV Sans"; src: url("/fonts/noto-sans-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "GV Sans"; src: url("/fonts/noto-sans-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "GV Sans"; src: url("/fonts/noto-sans-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "GV Serif"; src: url("/fonts/noto-serif-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "GV Serif"; src: url("/fonts/noto-serif-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "GV Telugu"; src: url("/fonts/noto-sans-telugu-telugu-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; unicode-range: U+0951-0952, U+0964-0965, U+0C00-0C7F, U+1CDA, U+200C-200D, U+25CC; }
+@font-face { font-family: "GV Telugu"; src: url("/fonts/noto-sans-telugu-telugu-600-normal.woff2") format("woff2"); font-weight: 600; font-display: swap; unicode-range: U+0951-0952, U+0964-0965, U+0C00-0C7F, U+1CDA, U+200C-200D, U+25CC; }
+@font-face { font-family: "GV Masaram Gondi"; src: url("/fonts/noto-sans-masaram-gondi-masaram-gondi-400-normal.woff2") format("woff2"); font-display: swap; unicode-range: U+11D00-11D5F; }
+@font-face { font-family: "GV Gunjala Gondi"; src: url("/fonts/noto-sans-gunjala-gondi-gunjala-gondi-400-normal.woff2") format("woff2"); font-display: swap; unicode-range: U+11D60-11DAF; }
+
+:root {
+  --ink: #2b1d13;
+  --ink-soft: #5d4b3d;
+  --muted: #7d6a5a;
+  --paper: #faf4ea;
+  --paper-2: #f3e9da;
+  --surface: #fffdf9;
+  --line: #e6d8c4;
+  --line-strong: #cdb89c;
+  --clay: #a6461f;          /* primary: terracotta */
+  --clay-dark: #7a3b1d;
+  --clay-tint: #f6e2d6;
+  --ochre: #d4942a;
+  --ochre-tint: #fbefd6;
+  --forest: #2d5b4e;
+  --forest-tint: #dcebe5;
+  --indigo: #2f3a6b;
+  --indigo-tint: #e2e5f3;
+  --danger: #a3261f;
+  --danger-tint: #fbe2df;
+  --focus: #2f3a6b;
+  --shadow: 0 1px 2px rgba(60, 35, 15, .06), 0 6px 18px -8px rgba(60, 35, 15, .18);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --font: "GV Sans", "GV Telugu", "GV Masaram Gondi", "GV Gunjala Gondi", system-ui, -apple-system, "Segoe UI", "Noto Sans Devanagari", sans-serif;
+  --font-display: "GV Serif", "GV Telugu", Georgia, serif;
+  --font-gondi: "GV Masaram Gondi", "GV Gunjala Gondi", "GV Telugu", "GV Sans", "Noto Sans Devanagari", system-ui, sans-serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #f3e9dc;
+    --ink-soft: #d6c6b3;
+    --muted: #ad9a87;
+    --paper: #1c1510;
+    --paper-2: #251c15;
+    --surface: #2a2018;
+    --line: #3e3126;
+    --line-strong: #5a4838;
+    --clay: #e0784a;
+    --clay-dark: #f09a70;
+    --clay-tint: #3d2418;
+    --ochre: #e7b04f;
+    --ochre-tint: #3a2c14;
+    --forest: #7cc0aa;
+    --forest-tint: #1d332c;
+    --indigo: #a9b4ea;
+    --indigo-tint: #262b45;
+    --danger: #ff8a80;
+    --danger-tint: #3f1d1a;
+    --focus: #f0b56a;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 22px -10px rgba(0, 0, 0, .6);
+    color-scheme: dark;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; line-height: 1.2; margin: 0 0 .5em; }
+p { margin: 0 0 .75em; }
+a { color: var(--clay); }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+[hidden] { display: none !important; }
+kbd {
+  font-family: var(--font); font-size: .8em; padding: .05em .45em; border-radius: 5px;
+  border: 1px solid var(--line-strong); background: var(--surface);
+}
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+
+.wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+.visually-hidden {
+  position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0; padding: 0; margin: -1px;
+}
+.skip-link { position: absolute; left: 12px; top: -60px; background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 8px; z-index: 100; }
+.skip-link:focus { top: 12px; }
+.small { font-size: .875rem; }
+.muted { color: var(--muted); }
+
+/* Buttons & inputs (shared with admin) */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .4em;
+  min-height: 40px; padding: .45em 1em; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink);
+  font-weight: 600; font-size: .95rem; text-decoration: none; white-space: nowrap;
+  transition: background .15s, border-color .15s, transform .05s;
+}
+.btn:hover { border-color: var(--clay); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.primary { background: var(--clay); border-color: var(--clay); color: #fff; }
+.btn.primary:hover { background: var(--clay-dark); border-color: var(--clay-dark); }
+.btn.good { background: var(--forest); border-color: var(--forest); color: #fff; }
+.btn.danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, transparent); }
+.btn.danger:hover { background: var(--danger-tint); }
+.btn.ghost { border-color: transparent; background: transparent; }
+.btn.small { min-height: 32px; padding: .25em .75em; font-size: .85rem; }
+@media (prefers-color-scheme: dark) {
+  .btn.primary, .btn.good { color: #1c1510; }
+}
+
+input[type="text"], input[type="search"], input[type="password"], input[type="date"], input[type="number"],
+select, textarea {
+  width: 100%; min-height: 42px; padding: .5em .75em;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--ink);
+}
+textarea { min-height: 84px; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--focus); outline-offset: 0; border-color: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

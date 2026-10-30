@@ -1,0 +1,10 @@
+.git
+.env
+data/
+storage/
+backups/
+**/__pycache__
+*.pyc
+.pytest_cache
+deployment/certs/
+deployment/certbot-www/

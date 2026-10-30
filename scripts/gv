@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Run a Gondi Vaani admin command inside the app container, e.g.
+#   sudo ./scripts/gv create-admin --username admin --name "Dr. A. Rao"
+#   sudo ./scripts/gv reset-password --username admin
+#   sudo ./scripts/gv list-users | seed-categories | backup
+set -euo pipefail
+cd "$(dirname "$0")/.."
+exec docker compose exec -u gondi app python -m app.cli "$@"
